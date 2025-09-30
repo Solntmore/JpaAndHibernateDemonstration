@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Декларация XML-файла -->
+
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+  <!-- Корневой тег persistence.xml. Описывает все persistence-unit (модули JPA) -->
+
+  <persistence-unit name="students-h2" transaction-type="RESOURCE_LOCAL">
+    <!-- Определение persistence-unit (единицы работы с БД):
+         name — уникальное имя для ссылки из кода
+         transaction-type="RESOURCE_LOCAL" — транзакции управляются самим приложением, а не контейнером (например, в Java SE) -->
+
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <!-- Провайдер JPA. Здесь используется Hibernate -->
+
+    <!-- Классы-сущности, которые будут управляться JPA -->
+    <class>jpa.entity.Discipline</class>
+    <class>jpa.entity.Mark</class>
+    <class>jpa.entity.Role</class>
+    <class>jpa.entity.Student</class>
+    <class>jpa.entity.Terms</class>
+    <class>jpa.entity.User</class>
+
+    <properties>
+      <!-- JDBC-настройки для подключения к базе -->
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <!-- JDBC-драйвер (здесь H2 in-memory DB) -->
+
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:students;DB_CLOSE_DELAY=-1;MODE=MySQL"/>
+      <!-- URL подключения к базе (in-memory H2, которая будет храниться в памяти, не в файле).
+           DB_CLOSE_DELAY=-1 — база живет до завершения JVM
+           MODE=MySQL — режим совместимости с MySQL -->
+
+      <property name="javax.persistence.jdbc.user" value="sa"/>
+      <!-- Пользователь для подключения (по умолчанию sa в H2) -->
+
+      <property name="javax.persistence.jdbc.password" value=""/>
+      <!-- Пароль для подключения (пустой в H2 по умолчанию) -->
+
+      <!-- Свойства Hibernate -->
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+      <!-- Стратегия генерации схемы:
+           create-drop — при старте создать таблицы, при завершении приложения удалить -->
+
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <!-- Диалект SQL, который будет использовать Hibernate (для H2) -->
+
+      <property name="hibernate.show_sql" value="true"/>
+      <!-- Логирование SQL-запросов в консоль -->
+
+      <property name="hibernate.format_sql" value="true"/>
+      <!-- Форматирование SQL-запросов в читаемый вид -->
+
+      <!-- Количество SQL-операций INSERT/UPDATE, которые Hibernate будет отправлять в один пакет (batch) -->
+      <property name="hibernate.jdbc.batch_size" value="50"/>
+
+      <!-- Hibernate будет сортировать INSERT-запросы по типу сущности, чтобы уменьшить блокировки и повысить эффективность batch -->
+      <property name="hibernate.order_inserts" value="true"/>
+
+      <!-- Hibernate будет сортировать UPDATE-запросы по типу сущности, чтобы повысить эффективность batch и уменьшить вероятность конфликтов -->
+      <property name="hibernate.order_updates" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>
